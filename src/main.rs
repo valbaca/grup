@@ -1,6 +1,7 @@
 // it's convention to bring in the parent module in scope, rather than the fn
 // this makes it clearer where fns are coming from
 use std::env;
+use std::error::Error;
 use std::fs;
 use std::process;
 fn main() {
@@ -12,13 +13,17 @@ fn main() {
         process::exit(1);
     });
 
+    run(config);
+}
+
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
     println!("Searching for {}", config.query);
     println!("In file {}", config.filename);
 
-    let contents =
-        fs::read_to_string(config.filename).expect("Something went wrong reading the file");
+    let contents = fs::read_to_string(config.filename)?;
 
     println!("With text:\n{}", contents);
+    Ok(())
 }
 
 struct Config {
